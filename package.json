@@ -1,0 +1,14 @@
+{
+  "name": "fireblocks-solana-change-staking-authority",
+  "version": "1.0.0",
+  "description": "Change staking authorities with Fireblocks Program Calls",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node dist/main.js"
+  },
+  "dependencies": {
+  "solana-web3-adapter": "github:fireblocks/solana-web3-adapter"
+},
+  "author": "",
+  "license": "ISC"
+}
