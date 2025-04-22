@@ -10,6 +10,10 @@ This script utilizes the Fireblocks Solana Web3 Adapter.
 - Learn more about Solana Stake authorities [here](https://solana.com/docs/references/staking/stake-accounts#understanding-account-authorities)
 
 
+## Requirements
+- Node >v20
+- npm
+
 ## Prerequisites
 
 Make sure to have the following prerequisites in place before running the script:
