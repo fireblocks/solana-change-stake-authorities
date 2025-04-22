@@ -27,8 +27,8 @@ Make sure to have the following prerequisites in place before running the script
 Clone this repository and install dependencies
 
 ```bash
-  git clone <repository>
-  cd solana-staking-authorities
+  git clone https://github.com/fireblocks/solana-change-stake-authorities.git
+  cd solana-change-stake-authorities
 ```
 
 Install dependencies:
