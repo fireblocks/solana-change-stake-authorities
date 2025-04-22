@@ -8,15 +8,23 @@ import {
 } from "@solana/web3.js";
 import { FireblocksConnectionAdapter } from "solana-web3-adapter";
 
-const API_KEY = "c0105e16-eca0-4480-8333-1a22f34c6cf8";
-const API_SECRET_PATH = "/Users/slavaserebriannyi/api_keys/fireblocks_secret_new.key";
+
+// Configure API key, secret path, vault account IDs and stake accounts
+const API_KEY = "00000000-0000-0000-0000-000000000000";
+const API_SECRET_PATH = "./fireblocks_secret.key";
 const CURRENT_AUTHORITY_VAULT = "2";
 const NEW_AUTHORITY_VAULT = "133";
 const STAKE_ACCOUNTS = [
   '9BpJAdXfRk4EoavH65BgcjNFdzDMekBJxJ1sm5xB82LC'
 ];
 
+
+/**
+ * Main function to change stake account authorization
+ */
 const main = async () => {
+
+  // Create Fireblocks connection adapter for current authority
   const currentAuthorityConnection = await FireblocksConnectionAdapter.create(
     clusterApiUrl("mainnet-beta"),
     {
@@ -26,6 +34,7 @@ const main = async () => {
     }
   );
 
+  // Create Fireblocks connection adapter for new authority
   const newAuthorityConnection = await FireblocksConnectionAdapter.create(
     clusterApiUrl("mainnet-beta"),
     {
@@ -35,8 +44,11 @@ const main = async () => {
     }
   );
 
+
+  // Create a Solana transaction object 
   const transaction: Transaction = new Transaction();
 
+  // Get the public keys of the current and new authorities
   const currentAuthorizedPubkey = new PublicKey(
     currentAuthorityConnection.getAccount()
   );
@@ -44,29 +56,36 @@ const main = async () => {
     newAuthorityConnection.getAccount()
   );
 
+  // Iterate over each stake account and add the authorization change instructions to the transaction
   for (const stakeAccount of STAKE_ACCOUNTS) {
+    
+    // Add the authorization change instruction (for Stake Authority) to the transaction
     transaction.add(
       StakeProgram.authorize({
-        stakePubkey: new PublicKey(stakeAccount),
-        authorizedPubkey: currentAuthorizedPubkey,
-        newAuthorizedPubkey: newAuthorizedPubkey,
-        stakeAuthorizationType: StakeAuthorizationLayout.Staker,
+        stakePubkey: new PublicKey(stakeAccount), // Stake account public key
+        authorizedPubkey: currentAuthorizedPubkey, // Current authority public key
+        newAuthorizedPubkey: newAuthorizedPubkey, // New authority public key
+        stakeAuthorizationType: StakeAuthorizationLayout.Staker, // Type of authorization to change
       })
     );
 
+    // Add the authorization change instruction (for Withdrawal Authority) to the transaction
     transaction.add(
       StakeProgram.authorize({
-        stakePubkey: new PublicKey(stakeAccount),
-        authorizedPubkey: currentAuthorizedPubkey,
-        newAuthorizedPubkey: newAuthorizedPubkey,
-        stakeAuthorizationType: StakeAuthorizationLayout.Withdrawer,
+        stakePubkey: new PublicKey(stakeAccount), // Stake account public key
+        authorizedPubkey: currentAuthorizedPubkey, // Current authority public key
+        newAuthorizedPubkey: newAuthorizedPubkey, // New authority public key
+        stakeAuthorizationType: StakeAuthorizationLayout.Withdrawer, // Type of authorization to change
       })
     );
 
+    // Set Fireblocks transaction note
     currentAuthorityConnection.setTxNote(
       `Changing stake account authorities for:\n${stakeAccount}\nfrom vault ${CURRENT_AUTHORITY_VAULT} to vault ${NEW_AUTHORITY_VAULT}`
     );
 
+
+    // Send the transaction to be signed and sent by Fireblocks
     const fireblocksTxId = await sendAndConfirmTransaction(
       currentAuthorityConnection,
       transaction,
@@ -79,6 +98,8 @@ const main = async () => {
   }
 };
 
+
+// Execute the main function and handle any errors
 main().catch((error) => {
   console.error("Error changing stake account authorization:", error);
 });

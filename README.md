@@ -5,8 +5,9 @@ This script is changing Solana stake account staking and withdrawal authorities 
 
 This script utilizes the Fireblocks Solana Web3 Adapter. 
 
-Learn more [here](https://developers.fireblocks.com/reference/solana-web3-adapter).
+- Learn more about the Fireblocks Solana Web3 Adapter [here](https://developers.fireblocks.com/reference/solana-web3-adapter).
 
+- Learn more about Solana Stake authorities [here](https://solana.com/docs/references/staking/stake-accounts#understanding-account-authorities)
 
 
 ## Prerequisites
