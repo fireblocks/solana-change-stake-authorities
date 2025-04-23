@@ -9,6 +9,7 @@ import {
 import { FireblocksConnectionAdapter } from "solana-web3-adapter";
 
 
+
 // Configure API key, secret path, vault account IDs and stake accounts
 const API_KEY = "00000000-0000-0000-0000-000000000000";
 const API_SECRET_PATH = "./fireblocks_secret.key";
@@ -78,24 +79,23 @@ const main = async () => {
         stakeAuthorizationType: StakeAuthorizationLayout.Withdrawer, // Type of authorization to change
       })
     );
-
-    // Set Fireblocks transaction note
-    currentAuthorityConnection.setTxNote(
-      `Changing stake account authorities for:\n${stakeAccount}\nfrom vault ${CURRENT_AUTHORITY_VAULT} to vault ${NEW_AUTHORITY_VAULT}`
-    );
-
-
-    // Send the transaction to be signed and sent by Fireblocks
-    const fireblocksTxId = await sendAndConfirmTransaction(
-      currentAuthorityConnection,
-      transaction,
-      []
-    );
-    console.log(
-      "Transaction sent successfully, transaction ID:",
-      fireblocksTxId
-    );
   }
+
+  // Set Fireblocks transaction note
+  currentAuthorityConnection.setTxNote(
+    `Changing stake account authorities for:\n${[...STAKE_ACCOUNTS]}\nfrom vault ${CURRENT_AUTHORITY_VAULT} to vault ${NEW_AUTHORITY_VAULT}`
+  );
+  
+  // Send the transaction to be signed and sent by Fireblocks
+  const fireblocksTxId = await sendAndConfirmTransaction(
+    currentAuthorityConnection,
+    transaction,
+    []
+  );
+  console.log(
+    "Transaction sent successfully, transaction ID:",
+    fireblocksTxId
+  );
 };
 
 
